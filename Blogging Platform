@@ -1,0 +1,159 @@
+package OOP;
+
+import java.util.*;
+
+class User {
+    private String username;
+    private String password;
+    private List<BlogPost> posts;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.posts = new ArrayList<>();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public boolean authenticate(String password) {
+        return this.password.equals(password);
+    }
+
+    public List<BlogPost> getPosts() {
+        return posts;
+    }
+
+    public void createPost(String title, String content) {
+        BlogPost post = new BlogPost(title, content, this);
+        posts.add(post);
+    }
+
+    public void editPost(BlogPost post, String newContent) {
+        if (posts.contains(post)) {
+            post.setContent(newContent);
+        } else {
+            System.out.println("You cannot edit this post as it doesn't belong to you.");
+        }
+    }
+
+    public void deletePost(BlogPost post) {
+        if (posts.contains(post)) {
+            posts.remove(post);
+        } else {
+            System.out.println("You cannot delete this post as it doesn't belong to you.");
+        }
+    }
+}
+
+class BlogPost {
+    private String title;
+    private String content;
+    private User author;
+    private List<Comment> comments;
+    private int likes;
+
+    public BlogPost(String title, String content, User author) {
+        this.title = title;
+        this.content = content;
+        this.author = author;
+        this.comments = new ArrayList<>();
+        this.likes = 0;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void like() {
+        likes++;
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
+}
+
+class Comment {
+    private String content;
+    private User author;
+
+    public Comment(String content, User author) {
+        this.content = content;
+        this.author = author;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+}
+
+public class BloggingPlatform {
+    private List<User> users;
+    private List<BlogPost> posts;
+
+    public BloggingPlatform() {
+        this.users = new ArrayList<>();
+        this.posts = new ArrayList<>();
+    }
+
+    public void signUp(String username, String password) {
+        users.add(new User(username, password));
+    }
+
+    public User signIn(String username, String password) {
+        for (User user : users) {
+            if (user.getUsername().equals(username) && user.authenticate(password)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public void createPost(User user, String title, String content) {
+        user.createPost(title, content);
+    }
+
+    public void editPost(User user, BlogPost post, String newContent) {
+        user.editPost(post, newContent);
+    }
+
+    public void deletePost(User user, BlogPost post) {
+        user.deletePost(post);
+    }
+
+    public void likePost(BlogPost post) {
+        post.like();
+    }
+
+    public void addComment(BlogPost post, String content, User author) {
+        Comment comment = new Comment(content, author);
+        post.addComment(comment);
+    }
+}
+
